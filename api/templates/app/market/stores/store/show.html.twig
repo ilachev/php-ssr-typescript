@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Магазины{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Витрина</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.stores') }}">Магазины</a></li>
+        <li class="breadcrumb-item active">{{ store.name }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/market/stores/_tabs.html.twig') }}
+
+    <div class="controls">
+        <a href="{{ path('market.stores.store.edit', {'id': store.id}) }}" class="btn btn-primary">Редактировать</a>
+        {% if store.active %}
+            <form action="{{ path('market.stores.store.archive', {'id': store.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('archive') }}" />
+                <button type="submit" class="btn btn-danger">Архивировать</button>
+            </form>
+        {% endif %}
+        {% if store.archived %}
+            <form action="{{ path('market.stores.store.reinstate', {'id': store.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('reinstate') }}" />
+                <button type="submit" class="btn btn-success">Восстановить</button>
+            </form>
+        {% endif %}
+        <form action="{{ path('market.stores.store.delete', {'id': store.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+            <input type="hidden" name="token" value="{{ csrf_token('delete') }}" />
+            <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th>Название</th>
+                <td>{{ store.name }}</td>
+            </tr>
+            <tr>
+                <th>ЧПУ</th>
+                <td>{{ store.slug }}</td>
+            </tr>
+            <tr>
+                <th>URL магазина</th>
+                <td>
+                    <a href="{{ store.address }}">
+                        {{ store.address }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>Категории</th>
+                <td>
+                    {% if store.categories is defined and store.categories is not null %}
+                        {% for category in store.categories %}
+                            <a class="btn btn-outline-primary" href="{{ path('market.categories.category.show', {'id': category.id}) }}">{{ category.name }}</a>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Описание</th>
+                <td>{{ store.description | raw }}</td>
+            </tr>
+            <tr>
+                <th>Детальное описание</th>
+                <td>{{ store.info.detail | raw }}</td>
+            </tr>
+            <tr>
+                <th>Контакты</th>
+                <td>{{ store.info.contacts | raw }}</td>
+            </tr>
+            <tr>
+                <th>Оплата</th>
+                <td>{{ store.info.payment | raw }}</td>
+            </tr>
+            <tr>
+                <th>Доставка</th>
+                <td>{{ store.info.delivery | raw }}</td>
+            </tr>
+            <tr>
+                <th>Сортировка</th>
+                <td>{{ store.sort }}</td>
+            </tr>
+            <tr>
+                <th>Статус</th>
+                <td>{{ store_status(store.status.name) }}</td>
+            </tr>
+            <tr>
+                <th>Meta Title</th>
+                <td>{{ store.meta.title }}</td>
+            </tr>
+            <tr>
+                <th>Meta Description</th>
+                <td>{{ store.meta.description }}</td>
+            </tr>
+            <tr>
+                <th>Meta OG Title</th>
+                <td>{{ store.meta.ogTitle }}</td>
+            </tr>
+            <tr>
+                <th>Meta OG Description</th>
+                <td>{{ store.meta.ogDescription }}</td>
+            </tr>
+            <tr>
+                <th>Seo H1</th>
+                <td>{{ store.seo.heading }}</td>
+            </tr>
+            <tr>
+                <th>Seo Description</th>
+                <td>{{ store.seo.description }}</td>
+            </tr>
+            <tr>
+                <th>Лого</th>
+                <td>
+                    {% if store.logo is defined and store.logo is not null %}
+                        <div style="max-width: 300px; max-height: 300px">
+                            <img src="{{ storage_path(store.logo.info.path ~ '/' ~ store.logo.info.name) }}"
+                                 alt="{{ store.logo.info.name }}"
+                                 style="max-width: 300px; max-height: 300px"
+                            >
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Автор</th>
+                <td>
+                    <a href="{{ path('market.authors.show', {'id': store.author.id}) }}">
+                        {{ store.author.name.full }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>Дата создания</th>
+                <td>{{ store.date | date('d.m.Y H:i') }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

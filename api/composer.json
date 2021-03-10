@@ -1,0 +1,129 @@
+{
+  "name": "ilyakara/keller",
+  "description": "Keller project",
+  "homepage": "https://gitlab.com/ilyakara/keller",
+  "authors": [
+    {
+      "name": "Ilya Karachev",
+      "email": "ilyakarachov@gmail.com"
+    }
+  ],
+  "license": "proprietary",
+  "type": "project",
+  "require": {
+    "php": "^8.0",
+    "ext-ctype": "*",
+    "ext-curl": "*",
+    "ext-iconv": "*",
+    "ext-json": "*",
+    "ext-openssl": "*",
+    "ext-pdo": "*",
+    "ext-redis": "*",
+    "ext-simplexml": "*",
+    "doctrine/annotations": "^1.10",
+    "exercise/htmlpurifier-bundle": "^3.0",
+    "friendsofsymfony/ckeditor-bundle": "^2.2",
+    "friendsofsymfony/rest-bundle": "3.0.*",
+    "google/recaptcha": "^1.2",
+    "jms/serializer-bundle": "^3.0",
+    "knplabs/knp-menu-bundle": "^3.0",
+    "knplabs/knp-paginator-bundle": "^5.2",
+    "league/flysystem-bundle": "^1.5",
+    "lexik/jwt-authentication-bundle": "^2.7",
+    "mailjet/mailjet-apiv3-php": "^1.5",
+    "nelmio/cors-bundle": "^2.1",
+    "nyholm/psr7": "^1.3",
+    "ramsey/uuid": "^4.0",
+    "sensio/framework-extra-bundle": "^5.2",
+    "symfony/console": "5.2.*",
+    "symfony/dotenv": "5.2.*",
+    "symfony/event-dispatcher": "5.2.*",
+    "symfony/flex": "^1.3.1",
+    "symfony/form": "5.2.*",
+    "symfony/framework-bundle": "5.2.*",
+    "symfony/messenger": "5.2.*",
+    "symfony/mime": "5.2.*",
+    "symfony/monolog-bundle": "^3.5",
+    "symfony/notifier": "5.2.*",
+    "symfony/orm-pack": "^1.0",
+    "symfony/routing": "5.2.*",
+    "symfony/security-bundle": "5.2.*",
+    "symfony/security-core": "5.2.*",
+    "symfony/security-http": "5.2.*",
+    "symfony/serializer-pack": "^1.0",
+    "symfony/swiftmailer-bundle": "^3.4",
+    "symfony/telegram-notifier": "5.2.*",
+    "symfony/templating": "5.2.*",
+    "symfony/translation": "5.2.*",
+    "symfony/uid": "5.2.*",
+    "symfony/validator": "5.2.*",
+    "symfony/webpack-encore-bundle": "^1.7",
+    "symfony/yaml": "5.2.*",
+    "trikoder/oauth2-bundle": "^3.1",
+    "webmozart/assert": "^1.8",
+    "zircote/swagger-php": "^3.0"
+  },
+  "require-dev": {
+    "doctrine/doctrine-fixtures-bundle": "^3.0",
+    "friendsofphp/php-cs-fixer": "^2.16",
+    "jetbrains/phpstorm-attributes": "^1.0",
+    "phpstan/phpstan": "^0.12.25",
+    "phpstan/phpstan-doctrine": "^0.12.15",
+    "phpstan/phpstan-symfony": "^0.12.6",
+    "roave/security-advisories": "dev-master",
+    "symfony/debug-pack": "*",
+    "symfony/maker-bundle": "^1.0",
+    "symfony/profiler-pack": "*",
+    "symfony/test-pack": "*"
+  },
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Tests\\": "tests/"
+    }
+  },
+  "replace": {
+    "paragonie/random_compat": "2.*",
+    "symfony/polyfill-ctype": "*",
+    "symfony/polyfill-iconv": "*",
+    "symfony/polyfill-php71": "*",
+    "symfony/polyfill-php70": "*",
+    "symfony/polyfill-php56": "*"
+  },
+  "scripts": {
+    "csfix": "vendor/bin/php-cs-fixer fix src tests --config=.php_cs.dist --verbose",
+    "analyse": "vendor/bin/phpstan analyse src/ -c phpstan.neon --no-progress --level=6 -vvv",
+    "test": "bin/phpunit",
+    "coverage": "bin/phpunit --coverage-html artifacts/coverage/",
+    "post-build-validate": "php bin/console doctrine:migrations:migrate -n && php bin/console doctrine:schema:validate && bin/console lint:yaml config --env=dev && composer run-script analyse",
+    "auto-scripts": {
+      "cache:clear": "symfony-cmd",
+      "assets:install %PUBLIC_DIR%": "symfony-cmd"
+    },
+    "post-install-cmd": [
+      "@auto-scripts"
+    ],
+    "post-update-cmd": [
+      "@auto-scripts"
+    ]
+  },
+  "conflict": {
+    "symfony/symfony": "*"
+  },
+  "extra": {
+    "symfony": {
+      "allow-contrib": false,
+      "require": "5.2.*"
+    }
+  }
+}

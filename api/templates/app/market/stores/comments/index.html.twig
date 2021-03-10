@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Комментарии{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Витрина</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.stores') }}">Магазины</a></li>
+        <li class="breadcrumb-item active">Комментарии</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/market/stores/_tabs.html.twig') }}
+
+    <div class="card">
+        <div class="card-body">
+
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-2">{{ form_widget(form.slug) }}</div>
+                <div class="col-md-2">{{ form_widget(form.status) }}</div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Фильтр</button>
+                    <a href="{{ path('market.stores.comments') }}" class="btn btn-outline-secondary">Сбросить</a>
+                </div>
+            </div>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Текст</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Магазин', 'store_name') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Статус', 'status') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Дата создания', 'date') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for comment in pagination %}
+                <tr>
+                    <td><a href="{{ path('market.stores.store.comment.show', {'id': comment.id}) }}">{{ comment.text }}</a></td>
+                    <td><a href="{{ path('market.stores.store.show', {'id': comment.store_id}) }}">{{ comment.store_name }}</a></td>
+                    <td>{{ store_comment_status(comment.status) }}</td>
+                    <td>{{ comment.date | date('d.m.Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
+{% endblock %}

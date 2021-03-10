@@ -1,0 +1,9 @@
+{% if discountUnit == 'percent' %}
+    <span>{{ discount }}%</span>
+{% elseif discountUnit == 'ruble' %}
+    <span>{{ discount }}₽</span>
+{% elseif discountUnit == 'dollar' %}
+    <span>${{ discount }}</span>
+{% elseif discountUnit == 'euro' %}
+    <span>€{{ discount }}</span>
+{% endif %}

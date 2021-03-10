@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /go/
+Sitemap: https://kuponopad.ru/sitemap/sitemap.xml

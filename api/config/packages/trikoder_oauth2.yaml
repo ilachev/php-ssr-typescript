@@ -1,0 +1,26 @@
+trikoder_oauth2:
+
+    authorization_server:
+        private_key: '%env(string:OAUTH2_PRIVATE_KEY)%'                    # Change this
+        private_key_passphrase: ~                            # Passphrase of the private key, if any
+        encryption_key: '%env(string:OAUTH2_ENCRYPTION_KEY)%'   # (Optional) Change this
+        encryption_key_type: 'plain'
+        access_token_ttl: P2Y
+        grant_types:
+            client_credentials:
+                enable: true
+            password:
+                enable: true
+            refresh_token:
+                enable: false
+
+    resource_server:
+        public_key: '%env(string:OAUTH2_PUBLIC_KEY)%'                     # Change this
+
+    scopes: ['common']
+
+    persistence:
+        doctrine:
+            entity_manager: default
+
+    exception_event_listener_priority: 10

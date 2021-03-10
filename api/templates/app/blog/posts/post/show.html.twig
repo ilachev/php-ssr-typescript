@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Магазины{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog') }}">Блог</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog.posts') }}">Статьи</a></li>
+        <li class="breadcrumb-item active">{{ post.name }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/blog/posts/_tabs.html.twig') }}
+
+    <div class="controls">
+        <a href="{{ path('blog.posts.post.edit', {'id': post.id}) }}" class="btn btn-primary">Редактировать</a>
+        {% if post.active %}
+            <form action="{{ path('blog.posts.post.archive', {'id': post.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('archive') }}" />
+                <button type="submit" class="btn btn-danger">Архивировать</button>
+            </form>
+        {% endif %}
+        {% if post.archived %}
+            <form action="{{ path('blog.posts.post.reinstate', {'id': post.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('reinstate') }}" />
+                <button type="submit" class="btn btn-success">Восстановить</button>
+            </form>
+        {% endif %}
+        <form action="{{ path('blog.posts.post.delete', {'id': post.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+            <input type="hidden" name="token" value="{{ csrf_token('delete') }}" />
+            <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th>Название</th>
+                <td>{{ post.name }}</td>
+            </tr>
+            <tr>
+                <th>ЧПУ</th>
+                <td>{{ post.slug }}</td>
+            </tr>
+            <tr>
+                <th>Категории</th>
+                <td>
+                    {% if post.categories is defined and post.categories is not null %}
+                        {% for category in post.categories %}
+                            <a class="btn btn-outline-primary" href="{{ path('blog.categories.category.show', {'id': category.id}) }}">{{ category.name }}</a>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Описание</th>
+                <td>{{ post.description | raw }}</td>
+            </tr>
+            <tr>
+                <th>Сортировка</th>
+                <td>{{ post.sort }}</td>
+            </tr>
+            <tr>
+                <th>Статус</th>
+                <td>{{ post_status(post.status.name) }}</td>
+            </tr>
+            <tr>
+                <th>Meta Title</th>
+                <td>{{ post.meta.title }}</td>
+            </tr>
+            <tr>
+                <th>Meta Description</th>
+                <td>{{ post.meta.description }}</td>
+            </tr>
+            <tr>
+                <th>Meta OG Title</th>
+                <td>{{ post.meta.ogTitle }}</td>
+            </tr>
+            <tr>
+                <th>Meta OG Description</th>
+                <td>{{ post.meta.ogDescription }}</td>
+            </tr>
+            <tr>
+                <th>Seo H1</th>
+                <td>{{ post.seo.heading }}</td>
+            </tr>
+            <tr>
+                <th>Seo Description</th>
+                <td>{{ post.seo.description }}</td>
+            </tr>
+            <tr>
+                <th>Лого</th>
+                <td>
+                    {% if post.logo is defined and post.logo is not null %}
+                        <div style="max-width: 300px; max-height: 300px">
+                            <img src="{{ storage_path(post.logo.info.path ~ '/' ~ post.logo.info.name) }}"
+                                 alt="{{ post.logo.info.name }}"
+                                 style="max-width: 300px; max-height: 300px"
+                            >
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Автор</th>
+                <td>
+                    <a href="{{ path('blog.authors.show', {'id': post.author.id}) }}">
+                        {{ post.author.name.full }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>Дата создания</th>
+                <td>{{ post.date | date('d.m.Y H:i') }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

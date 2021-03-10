@@ -1,0 +1,18 @@
+{
+  "TrendingStores": "Trending Stores",
+  "TrendingCategories": "Trending Categories",
+  "BestPromo": "Best Promocodes",
+
+  "Search": "Search",
+
+  "Categories": "Categories",
+  "Stores": "Stores",
+  "BestDrops": "Best",
+  "Help": "Help",
+
+  "title": "How to use promotional codes?",
+  "description": "What you need to do to start saving",
+  "stepOne": "Choose the online store for which you want to get a discount.",
+  "stepTwo": "On the store page you can pick up a discount. Click the button “Show Promo”",
+  "stepThree": "Go to store, choose a product. Price will be recalculated taking into account discounts."
+}

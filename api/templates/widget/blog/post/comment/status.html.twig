@@ -1,0 +1,7 @@
+{% if status == 'approved' %}
+    <span class="badge badge-success" style="font-size: 100%">Подтверждён</span>
+{% elseif status == 'draft' %}
+    <span class="badge badge-secondary" style="font-size: 100%">Черновик</span>
+{% elseif status == 'declined' %}
+    <span class="badge badge-danger" style="font-size: 100%">Отклонён</span>
+{% endif %}

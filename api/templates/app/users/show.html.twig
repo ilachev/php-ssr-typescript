@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('users') }}">Пользователи</a></li>
+        <li class="breadcrumb-item active">{{ user.name.full }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    <div class="controls">
+        {% if user.id.value != app.user.id %}
+            <a href="{{ path('users.edit', {'id': user.id}) }}" class="btn btn-primary">Редактировать</a>
+            <a href="{{ path('users.role', {'id': user.id}) }}" class="btn btn-primary">Поменять роль</a>
+        {% endif %}
+        {% if user.wait %}
+            <form action="{{ path('users.confirm', {'id': user.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+                <input type="hidden" name="token" value="{{ csrf_token('confirm') }}" />
+                <button type="submit" class="btn btn-success">Подтвердить</button>
+            </form>
+        {% endif %}
+        {% if user.active and user.id.value != app.user.id %}
+            <form action="{{ path('users.block', {'id': user.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+                <input type="hidden" name="token" value="{{ csrf_token('block') }}" />
+                <button type="submit" class="btn btn-danger">Заблокировать</button>
+            </form>
+        {% endif %}
+        {% if user.blocked %}
+            <form action="{{ path('users.activate', {'id': user.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+                <input type="hidden" name="token" value="{{ csrf_token('activate') }}" />
+                <button type="submit" class="btn btn-success">Активировать</button>
+            </form>
+        {% endif %}
+        {% if is_granted('ROLE_MARKET_MANAGE_AUTHORS') %}
+            {% if marketAuthor %}
+                <a href="{{ path('market.authors.show', {'id': marketAuthor.id}) }}" class="btn btn-primary">Посмотреть автора витрины</a>
+            {% else %}
+                <a href="{{ path('market.authors.create', {'id': user.id}) }}" class="btn btn-primary">Создать автора витрины</a>
+            {% endif %}
+        {% endif %}
+        {% if is_granted('ROLE_BLOG_MANAGE_AUTHORS') %}
+            {% if blogAuthor %}
+                <a href="{{ path('blog.authors.show', {'id': blogAuthor.id}) }}" class="btn btn-primary">Посмотреть автора блога</a>
+            {% else %}
+                <a href="{{ path('blog.authors.create', {'id': user.id}) }}" class="btn btn-primary">Создать автора блога</a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Имя</th>
+                    <td>{{ user.name.full }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ user.email ? user.email.value : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Роль</th>
+                    <td>{{ user_role(user.role.name) }}</td>
+                </tr>
+                <tr>
+                    <th>Статус</th>
+                    <td>{{ user_status(user.status) }}</td>
+                </tr>
+                <tr>
+                    <th>Дата создания</th>
+                    <td>{{ user.date | date('d.m.Y H:i') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

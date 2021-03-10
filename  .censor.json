@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "coverage": {
+      "required": 53
+    },
+    "changes_count": {
+      "exclude": [
+        "api/config/*",
+        "api/translations/*",
+        "api/src/Migrations/*",
+        "api/src/Entity/*",
+        "api/composer.lock"
+      ],
+      "error": 2000
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Авторы{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Витрина</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.authors') }}">Авторы</a></li>
+        <li class="breadcrumb-item">
+            <a href="{{ path('market.authors.show', {'id': author.id}) }}">{{ author.name.full }}</a>
+        </li>
+        <li class="breadcrumb-item active">Редактировать</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    <div class="card">
+        <div class="card-body">
+
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+{% endblock %}

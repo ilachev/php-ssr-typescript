@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Категория{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Витрина</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.categories') }}">Категории</a></li>
+        <li class="breadcrumb-item active">{{ category.name }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/market/categories/_tabs.html.twig') }}
+
+    <div class="controls">
+        <a href="{{ path('market.categories.category.edit', {'id': category.id}) }}" class="btn btn-primary">Редактировать</a>
+        {% if category.active %}
+            <form action="{{ path('market.categories.category.archive', {'id': category.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('archive') }}" />
+                <button type="submit" class="btn btn-danger">Архивировать</button>
+            </form>
+        {% endif %}
+        {% if category.archived %}
+            <form action="{{ path('market.categories.category.reinstate', {'id': category.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('reinstate') }}" />
+                <button type="submit" class="btn btn-success">Восстановить</button>
+            </form>
+        {% endif %}
+        <form action="{{ path('market.categories.category.delete', {'id': category.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+            <input type="hidden" name="token" value="{{ csrf_token('delete') }}" />
+            <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Название</th>
+                    <td>{{ category.name }}</td>
+                </tr>
+                <tr>
+                    <th>ЧПУ</th>
+                    <td>{{ category.slug }}</td>
+                </tr>
+                <tr>
+                    <th>Описание</th>
+                    <td>{{ category.description | raw }}</td>
+                </tr>
+                <tr>
+                    <th>Родительская категория</th>
+                    <td>
+                        {% if category.parent is defined and category.parent is not null %}
+                            <a class="btn btn-outline-primary"
+                               href="{{ path('market.categories.category.show', {'id': category.parent.id}) }}">{{ category.parent.name }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Сортировка</th>
+                    <td>{{ category.sort }}</td>
+                </tr>
+                <tr>
+                    <th>Статус</th>
+                    <td>{{ category_status(category.status.name) }}</td>
+                </tr>
+                <tr>
+                    <th>Meta Title</th>
+                    <td>{{ category.meta.title }}</td>
+                </tr>
+                <tr>
+                    <th>Meta Description</th>
+                    <td>{{ category.meta.description }}</td>
+                </tr>
+                <tr>
+                    <th>Meta OG Title</th>
+                    <td>{{ category.meta.ogTitle }}</td>
+                </tr>
+                <tr>
+                    <th>Meta OG Description</th>
+                    <td>{{ category.meta.ogDescription }}</td>
+                </tr>
+                <tr>
+                    <th>Seo H1</th>
+                    <td>{{ category.seo.heading }}</td>
+                </tr>
+                <tr>
+                    <th>Seo Description</th>
+                    <td>{{ category.seo.description }}</td>
+                </tr>
+                <tr>
+                    <th>Лого</th>
+                    <td>
+                        {% if category.logo is defined and category.logo is not null %}
+                            <div style="max-width: 300px; max-height: 300px">
+                                <img src="{{ storage_path(category.logo.info.path ~ '/' ~ category.logo.info.name) }}"
+                                     alt="{{ category.logo.info.name }}"
+                                     style="max-width: 300px; max-height: 300px"
+                                >
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Автор</th>
+                    <td>
+                        <a href="{{ path('market.authors.show', {'id': category.author.id}) }}">
+                            {{ category.author.name.full }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Дата создания</th>
+                    <td>{{ category.date | date('d.m.Y H:i') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

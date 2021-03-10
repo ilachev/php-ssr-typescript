@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "coverage": {
+      "required": 30
+    },
+    "changes_count": {
+      "exclude": [
+        "package-lock.json",
+        "package.json",
+        "hooks/*",
+        "*.svg"
+      ]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+#!/bin/bash
+set -eo pipefail
+
+curl --fail http://$DEPLOY_API_URL/ || exit 1

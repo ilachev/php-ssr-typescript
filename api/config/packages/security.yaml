@@ -1,0 +1,69 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        fetcher:
+            id: App\Security\UserProvider
+    encoders:
+        App\Security\UserIdentity: native
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        api_token:
+            pattern: ^/token$
+            security: false
+        api:
+            pattern: ^/api
+            user_checker: App\Security\UserChecker
+            anonymous: true
+            stateless: true
+            oauth2: true
+        main:
+            anonymous: true
+            user_checker: App\Security\UserChecker
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+                entry_point: App\Security\LoginFormAuthenticator
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+
+            # activate different ways to authenticate
+
+            # http_basic: true
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+
+            form_login: true
+            logout:
+                path:   app_logout
+
+    role_hierarchy:
+        ROLE_ADMIN:
+            - ROLE_USER
+            - ROLE_MANAGE_USERS
+            - ROLE_MARKET_MANAGE_CATEGORIES
+            - ROLE_MARKET_MANAGE_STORES
+            - ROLE_MARKET_MANAGE_PROMOS
+            - ROLE_MARKET_MANAGE_AUTHORS
+
+            - ROLE_BLOG_MANAGE_AUTHORS
+            - ROLE_BLOG_MANAGE_CATEGORIES
+            - ROLE_BLOG_MANAGE_POSTS
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/market/uploads, role: ROLE_USER }
+        - { path: ^/api/market/stores/comments/create, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/blog/posts/comments/create, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/?$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/auth, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/market, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/blog, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/oauth, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_USER }

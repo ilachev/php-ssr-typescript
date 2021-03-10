@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Магазины{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Блог</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog.posts') }}">Статьи</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog.posts.comments') }}">Комментарии</a></li>
+        <li class="breadcrumb-item active">Комментарий</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/blog/posts/_tabs.html.twig') }}
+
+    <div class="controls">
+        {% if comment.status.isApproved %}
+            <form action="{{ path('blog.posts.post.comment.draft', {'id': comment.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('draft') }}" />
+                <button type="submit" class="btn btn-secondary">В черновики</button>
+            </form>
+            <form action="{{ path('blog.posts.post.comment.decline', {'id': comment.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('decline') }}" />
+                <button type="submit" class="btn btn-danger">Отклонить</button>
+            </form>
+        {% endif %}
+        {% if comment.status.isDeclined %}
+            <form action="{{ path('blog.posts.post.comment.draft', {'id': comment.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('draft') }}" />
+                <button type="submit" class="btn btn-secondary">В черновики</button>
+            </form>
+            <form action="{{ path('blog.posts.post.comment.approve', {'id': comment.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('approve') }}" />
+                <button type="submit" class="btn btn-success">Принять</button>
+            </form>
+        {% endif %}
+        {% if comment.status.isDraft %}
+            <form action="{{ path('blog.posts.post.comment.approve', {'id': comment.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('approve') }}" />
+                <button type="submit" class="btn btn-success">Принять</button>
+            </form>
+            <form action="{{ path('blog.posts.post.comment.decline', {'id': comment.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('decline') }}" />
+                <button type="submit" class="btn btn-danger">Отклонить</button>
+            </form>
+        {% endif %}
+        <form action="{{ path('blog.posts.post.comment.delete', {'id': comment.id}) }}" method="post">
+            <input type="hidden" name="token" value="{{ csrf_token('delete') }}" />
+            <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th>Текст</th>
+                <td>{{ comment.text }}</td>
+            </tr>
+            <tr>
+                <th>Статус</th>
+                <td>{{ post_comment_status(comment.status.name) }}</td>
+            </tr>
+            <tr>
+                <th>Автор</th>
+                <td>
+                    <a href="{{ path('blog.authors.show', {'id': comment.author.id}) }}">
+                        {{ comment.author.name.full }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>Дата создания</th>
+                <td>{{ comment.date | date('d.m.Y H:i') }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

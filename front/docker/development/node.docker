@@ -1,0 +1,8 @@
+FROM node:13-alpine as node
+RUN apk add --no-cache bash
+COPY node/docker-healthcheck /usr/local/bin/
+RUN chmod a+x /usr/local/bin/docker-healthcheck
+WORKDIR /srv/front
+EXPOSE 3000
+CMD ["npm", "run", "start:dev"]
+HEALTHCHECK CMD ["docker-healthcheck"]

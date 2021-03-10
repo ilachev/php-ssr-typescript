@@ -1,0 +1,88 @@
+parameters:
+    env(POSTGRES_VERSION): ''
+    env(POSTGRES_DB): ''
+    env(POSTGRES_HOST): ''
+    env(POSTGRES_PASSWORD): ''
+    env(POSTGRES_USER): ''
+    env(DB_PORT): ''
+
+doctrine:
+    dbal:
+        # configure these for your database server
+        driver: 'pdo_pgsql'
+        server_version: '%env(POSTGRES_VERSION)%'
+
+        host: '%env(POSTGRES_HOST)%'
+        dbname: '%env(POSTGRES_DB)%'
+        user: '%env(POSTGRES_USER)%'
+        password: '%env(POSTGRES_PASSWORD)%'
+        port: '%env(DB_PORT)%'
+
+        schema_filter: ~^(?!topology).*$~
+
+        types:
+            user_user_id: 'App\Model\User\Entity\User\IdType'
+            user_user_email: 'App\Model\User\Entity\User\EmailType'
+            user_user_role: 'App\Model\User\Entity\User\RoleType'
+
+            market_author_id: 'App\Model\Market\Entity\Author\IdType'
+            market_author_email: 'App\Model\Market\Entity\Author\EmailType'
+            market_author_status: 'App\Model\Market\Entity\Author\StatusType'
+
+            market_stores_store_id: 'App\Model\Market\Entity\Stores\Store\IdType'
+            market_stores_store_logo_id: 'App\Model\Market\Entity\Stores\Store\Logo\IdType'
+            market_stores_store_comment_id: 'App\Model\Market\Entity\Stores\Store\Comment\IdType'
+            market_stores_store_comment_status: 'App\Model\Market\Entity\Stores\Store\Comment\StatusType'
+            market_stores_store_status: 'App\Model\Market\Entity\Stores\Store\StatusType'
+            market_stores_setting_id: 'App\Model\Market\Entity\Stores\Setting\IdType'
+
+            market_promos_promo_id: 'App\Model\Market\Entity\Promos\Promo\IdType'
+            market_promos_promo_type: 'App\Model\Market\Entity\Promos\Promo\TypeType'
+            market_promos_promo_status: 'App\Model\Market\Entity\Promos\Promo\StatusType'
+            market_promos_promo_discount_unit: 'App\Model\Market\Entity\Promos\Promo\DiscountUnitType'
+            market_promos_promo_referral_link_id: 'App\Model\Market\Entity\Promos\Promo\ReferralLink\IdType'
+            market_promos_setting_id: 'App\Model\Market\Entity\Promos\Setting\IdType'
+
+            market_categories_category_id: 'App\Model\Market\Entity\Categories\Category\IdType'
+            market_categories_category_logo_id: 'App\Model\Market\Entity\Categories\Category\Logo\IdType'
+            market_categories_category_status: 'App\Model\Market\Entity\Categories\Category\StatusType'
+            market_categories_setting_id: 'App\Model\Market\Entity\Categories\Setting\IdType'
+
+            blog_author_id: 'App\Model\Blog\Entity\Author\IdType'
+            blog_author_email: 'App\Model\Blog\Entity\Author\EmailType'
+            blog_author_status: 'App\Model\Blog\Entity\Author\StatusType'
+
+            blog_categories_category_id: 'App\Model\Blog\Entity\Categories\Category\IdType'
+            blog_categories_category_status: 'App\Model\Blog\Entity\Categories\Category\StatusType'
+            blog_categories_setting_id: 'App\Model\Blog\Entity\Categories\Setting\IdType'
+
+            blog_posts_post_id: 'App\Model\Blog\Entity\Posts\Post\IdType'
+            blog_posts_post_status: 'App\Model\Blog\Entity\Posts\Post\StatusType'
+            blog_posts_setting_id: 'App\Model\Blog\Entity\Posts\Setting\IdType'
+            blog_posts_post_logo_id: 'App\Model\Blog\Entity\Posts\Post\Logo\IdType'
+            blog_posts_post_comment_id: 'App\Model\Blog\Entity\Posts\Post\Comment\IdType'
+            blog_posts_post_comment_status: 'App\Model\Blog\Entity\Posts\Post\Comment\StatusType'
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            User:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Model/User/Entity'
+                prefix: 'App\Model\User\Entity'
+                alias: User
+            Market:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Model/Market/Entity'
+                prefix: 'App\Model\Market\Entity'
+                alias: Market
+            Blog:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Model/Blog/Entity'
+                prefix: 'App\Model\Blog\Entity'
+                alias: Blog

@@ -1,0 +1,46 @@
+FROM node:13-alpine AS node-builder
+
+WORKDIR /srv/api
+
+COPY ./package.json ./package-lock.json ./
+
+RUN npm install && npm rebuild node-sass
+
+COPY ./ ./
+
+RUN npm run build
+
+######################
+
+FROM thecodingmachine/php:7.4-v3-slim-fpm as php
+
+USER root
+RUN cd /usr/local/lib/thecodingmachine-php/extensions/current/ && ./install_all.sh && ./disable_all.sh
+USER docker
+
+ENV PHP_EXTENSION_APCU=1 \
+    PHP_EXTENSION_PGSQL=1 \
+    PHP_EXTENSION_PDO_PGSQL=1 \
+    PHP_EXTENSION_IGBINARY=1 \
+    PHP_EXTENSION_OPCACHE=1 \
+    PHP_EXTENSION_ZIP=1 \
+    PHP_EXTENSION_INTL=1 \
+    PHP_EXTENSION_REDIS=1
+
+COPY ./docker/production/php/conf.d/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY ./docker/production/php/docker-healthcheck /usr/local/bin/
+RUN sudo chmod a+x /usr/local/bin/docker-healthcheck
+RUN sudo rm -rf /var/lib/apt/lists/* \
+    && sudo apt-get update \
+    && sudo apt-get install -y imagemagick --no-install-recommends \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+WORKDIR /srv/api
+
+COPY --from=node-builder /srv/api/public/build ./public/build
+COPY ./ ./
+
+ENV APP_ENV prod
+
+RUN php bin/console assets:install
+RUN php bin/console cache:warmup

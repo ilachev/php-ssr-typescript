@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Магазины{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog') }}">Блог</a></li>
+        <li class="breadcrumb-item active">Магазины</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/blog/posts/_tabs.html.twig') }}
+
+    <div class="controls">
+        <a href="{{ path('blog.posts.create') }}" class="btn btn-success">Добавить статью</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-2">{{ form_widget(form.name) }}</div>
+                <div class="col-md-2">{{ form_widget(form.status) }}</div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Фильтр</button>
+                    <a href="{{ path('blog.posts') }}" class="btn btn-outline-secondary">Сбросить</a>
+                </div>
+            </div>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>{{ knp_pagination_sortable(pagination, 'Название', 'name') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Сортировка', 'sort') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Статус', 'status') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Дата создания', 'date') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for post in pagination %}
+                <tr>
+                    <td><a href="{{ path('blog.posts.post.show', {'id': post.id}) }}">{{ post.name }}</a></td>
+                    <td>{{ post.sort }}</td>
+                    <td>{{ post_status(post.status) }}</td>
+                    <td>{{ post.date | date('d.m.Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
+{% endblock %}

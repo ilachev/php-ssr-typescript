@@ -1,0 +1,39 @@
+default:
+    image: php:7.4-fpm
+    services:
+        - name: mysql:5.7
+          alias: mysql
+
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+        - vendor/
+
+variables:
+    MYSQL_ROOT_PASSWORD: pass_test
+    MYSQL_DATABASE: myapptest
+    MYSQL_USER: myapptest
+    MYSQL_PASSWORD: myapptest
+    # symfony 4
+    DATABASE_URL: 'mysql://myapptest:myapptest@mysql:3306/myapptest'
+    # symfony 3.2+
+    TEST_DATABASE_PORT: 3306
+    TEST_DATABASE_HOST: mysql
+before_script:
+    - sh scripts/ci-php-install.sh
+    - php bin/composer.phar global require hirak/prestissimo
+    - php bin/composer.phar install -o
+
+static_analysis:
+    stage: static_analysis
+    script:
+        - php bin/phpstan.phar analyse src --level=1
+
+phpunit:
+    stage: test
+    script:
+        - sh scripts/php_test_run.sh
+
+stages:
+    - static_analysis
+    - test

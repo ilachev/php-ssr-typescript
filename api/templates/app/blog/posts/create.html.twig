@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Магазины{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog') }}">Блог</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog.posts') }}">Статьи</a></li>
+        <li class="breadcrumb-item active">Создать</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/blog/posts/_tabs.html.twig') }}
+
+    <div class="card">
+        <div class="card-body">
+
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+{% endblock %}

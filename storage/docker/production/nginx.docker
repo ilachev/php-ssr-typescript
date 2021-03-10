@@ -1,0 +1,7 @@
+FROM nginx:stable-alpine
+
+COPY docker/production/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/production/nginx/module.conf /etc/nginx/module.conf
+COPY docker/production/nginx/nginx.conf /etc/nginx/nginx.conf
+
+WORKDIR /app

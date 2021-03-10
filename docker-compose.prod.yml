@@ -1,0 +1,102 @@
+version: '3.7'
+
+services:
+    gateway:
+        image: ${REGISTRY_ADDRESS}/gateway:${IMAGE_TAG}
+        restart: always
+        volumes:
+            - /etc/letsencrypt:/etc/letsencrypt:ro
+            - /var/www/html:/var/www/html:ro
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - api
+            - front
+            - storage
+
+    api-php-fpm:
+        image: ${REGISTRY_ADDRESS}/api-php-fpm:${IMAGE_TAG}
+        restart: always
+        env_file:
+            - .env
+        environment:
+            STORAGE_BASE_URL: ${STORAGE_BASE_URL}
+        depends_on:
+            - db
+            - redis
+
+    api-php-cli:
+        image: ${REGISTRY_ADDRESS}/api-php-cli:${IMAGE_TAG}
+        env_file:
+            - .env
+        environment:
+            STORAGE_BASE_URL: ${STORAGE_BASE_URL}
+        volumes:
+            - sitemap-data:/srv/api/var/sitemap
+        depends_on:
+            - db
+            - redis
+
+    api:
+        image: ${REGISTRY_ADDRESS}/nginx:${IMAGE_TAG}
+        restart: always
+        depends_on:
+            - api-php-fpm
+
+    redis:
+        image: ${REGISTRY_ADDRESS}/redis:${IMAGE_TAG}
+        restart: always
+        env_file:
+            - .env
+        command:
+            - 'redis-server'
+            - '--databases 2'
+            - '--save 900 1'
+            - '--save 300 10'
+            - '--save 60 10000'
+            - '--requirepass ${REDIS_PASSWORD}'
+        volumes:
+            - redis-data:/data:rw
+
+    db:
+        image: ${REGISTRY_ADDRESS}/postgres:${IMAGE_TAG}
+        restart: always
+        env_file:
+            - .env
+        volumes:
+            - db-data:/var/lib/postgresql/data:rw
+
+    front:
+        image: ${REGISTRY_ADDRESS}/front:${IMAGE_TAG}
+        restart: unless-stopped
+        depends_on:
+            - front-node
+
+    front-node:
+        image: ${REGISTRY_ADDRESS}/front-node:${IMAGE_TAG}
+        restart: unless-stopped
+        volumes:
+            - sitemap-data:/srv/front/public/sitemap
+        tty: true
+
+    storage:
+        image: ${REGISTRY_ADDRESS}/storage:${IMAGE_TAG}
+        restart: always
+        volumes:
+            - /srv/storage:/srv/storage
+
+    storage-ftp:
+        image: stilliard/pure-ftpd
+        environment:
+            FTP_USER_NAME: app
+            FTP_USER_PASS: secret
+            FTP_USER_HOME: /srv/storage
+        volumes:
+            - /srv/storage/public:/srv/storage
+
+volumes:
+    db-data: ~
+    redis-data: ~
+    storage-data: ~
+    sitemap-data: ~

@@ -1,0 +1,16 @@
+includes:
+  - vendor/phpstan/phpstan-symfony/extension.neon
+  - vendor/phpstan/phpstan-doctrine/extension.neon
+
+parameters:
+  symfony:
+    container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'
+    console_application_loader: 'bin/console-test'
+
+  reportUnmatchedIgnoredErrors: false
+  inferPrivatePropertyTypeFromConstructor: true
+  checkGenericClassInNonGenericObjectType: false
+  checkMissingIterableValueType: false
+
+  excludes_analyse:
+    - '%rootDir%/../../../src/Migrations/*'

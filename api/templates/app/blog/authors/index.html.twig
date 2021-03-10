@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Авторы{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog') }}">Блог</a></li>
+        <li class="breadcrumb-item active">Авторы</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    <div class="card">
+        <div class="card-body">
+
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-2">{{ form_widget(form.name) }}</div>
+                <div class="col-md-2">{{ form_widget(form.email) }}</div>
+                <div class="col-md-2">{{ form_widget(form.status) }}</div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Фильтр</button>
+                    <a href="{{ path('blog.authors') }}" class="btn btn-outline-secondary">Сбросить</a>
+                </div>
+            </div>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>{{ knp_pagination_sortable(pagination, 'Имя', 'name') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Email', 'email') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Статус', 'status') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Дата создания', 'date') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for author in pagination %}
+                <tr>
+                    <td><a href="{{ path('blog.authors.show', {'id': author.id}) }}">{{ author.name }}</a></td>
+                    <td>{{ author.email }}</td>
+                    <td>{{ author_status(author.status) }}</td>
+                    <td>{{ author.date | date('d.m.Y H:i') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
+{% endblock %}

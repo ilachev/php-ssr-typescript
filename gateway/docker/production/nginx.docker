@@ -1,0 +1,6 @@
+FROM nginx:stable-alpine
+
+COPY ./docker/common/nginx/snippets /etc/nginx/snippets
+COPY ./docker/production/nginx/conf.d /etc/nginx/conf.d
+
+WORKDIR /srv

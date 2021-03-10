@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Авторы{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Витрина</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.authors') }}">Авторы</a></li>
+        <li class="breadcrumb-item active">{{ author.name.full }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    <div class="controls">
+        <a href="{{ path('market.authors.edit', {'id': author.id}) }}" class="btn btn-primary">Редактировать</a>
+        <a href="{{ path('users.show', {'id': author.id}) }}" class="btn btn-primary">Посмотреть пользователя</a>
+        {% if author.active and author.id.value != app.user.id %}
+            <form action="{{ path('market.authors.archive', {'id': author.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+                <input type="hidden" name="token" value="{{ csrf_token('archive') }}" />
+                <button type="submit" class="btn btn-danger">Архивировать</button>
+            </form>
+        {% endif %}
+        {% if author.archived %}
+            <form action="{{ path('market.authors.reinstate', {'id': author.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+                <input type="hidden" name="token" value="{{ csrf_token('reinstate') }}" />
+                <button type="submit" class="btn btn-success">Восстановить</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Имя</th>
+                    <td>{{ author.name.full }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ author.email.value }}</td>
+                </tr>
+                <tr>
+                    <th>Статус</th>
+                    <td>{{ author_status(author.status.name) }}</td>
+                </tr>
+                <tr>
+                    <th>Дата создания</th>
+                    <td>{{ author.date | date('d.m.Y H:i') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

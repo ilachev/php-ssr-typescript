@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item active">Профиль</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    <div class="card">
+        <div class="card-header">Профиль</div>
+        <div class="card-body">
+            <table class="table table-bordered mb-0">
+                <tbody>
+                <tr>
+                    <th>Имя</th>
+                    <td>
+                        {{ user.name.full }}
+                        <a href="{{ path('profile.name') }}" class="btn btn-sm btn-outline-primary"><span class="fa fa-pencil"></span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>
+                        {{ user.email ? user.email.value : '' }}
+                        <a href="{{ path('profile.email') }}" class="btn btn-sm btn-outline-primary"><span class="fa fa-pencil"></span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Роль</th>
+                    <td>{{ user_role(user.role.name) }}</td>
+                </tr>
+                <tr>
+                    <th>Статус</th>
+                    <td>{{ user_status(user.status) }}</td>
+                </tr>
+                <tr>
+                    <th>Дата создания</th>
+                    <td>{{ user.date | date('d.m.Y H:i') }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "127.0.0.1 $DEPLOY_URL" >> /etc/hosts
+nginx -g 'daemon off;'

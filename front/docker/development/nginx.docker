@@ -1,0 +1,11 @@
+FROM nginx:stable-alpine as nginx
+COPY nginx/nginx-start /usr/local/bin/
+RUN rm /etc/nginx/conf.d/*
+COPY nginx/conf.d/default.dev.conf /etc/nginx/conf.d/
+EXPOSE 80
+RUN chmod a+x /usr/local/bin/nginx-start
+CMD ["nginx-start"]
+RUN apk add --no-cache bash curl
+COPY nginx/docker-healthcheck /usr/local/bin/
+RUN chmod a+x /usr/local/bin/docker-healthcheck
+HEALTHCHECK CMD ["docker-healthcheck"]

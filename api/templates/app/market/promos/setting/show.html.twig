@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Магазины{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Витрина</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.promos') }}">Промо</a></li>
+        <li class="breadcrumb-item">Шаблоны</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/market/promos/_tabs.html.twig') }}
+
+    <div class="controls">
+        <a href="{{ path('market.promos.setting.edit', {'id': setting.id}) }}" class="btn btn-primary">Редактировать</a>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Seo H1</th>
+                    <td>{{ setting.template.seo.heading }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

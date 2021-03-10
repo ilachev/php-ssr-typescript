@@ -1,0 +1,7 @@
+{% if type == 'coupon' %}
+    <span class="badge badge-success" style="font-size: 100%">Купон</span>
+{% elseif type == 'discount' %}
+    <span class="badge badge-danger" style="font-size: 100%">Скидка</span>
+{% elseif type == 'promo-code' %}
+    <span class="badge badge-secondary" style="font-size: 100%">Промо-код</span>
+{% endif %}

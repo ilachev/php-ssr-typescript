@@ -1,0 +1,4 @@
+#!/bin/bash
+set -eo pipefail
+
+curl --fail http://$DEPLOY_URL:$FRONT_PORT || exit 1

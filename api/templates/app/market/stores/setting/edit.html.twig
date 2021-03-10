@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Магазины{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Витрина</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.stores') }}">Магазины</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.stores.setting.show', {'id': setting.id}) }}">Шаблоны</a></li>
+        <li class="breadcrumb-item active">Редактировать</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/market/stores/_tabs.html.twig') }}
+
+    <div class="card">
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Поддерживаемые переменные:</h5>
+                    <ul>
+                        <li>
+                            [[name]] - название магазина - Aliexpress
+                        </li>
+                        <li>
+                            [[day]] - текущий день - 01
+                        </li>
+                        <li>
+                            [[month]] - текущий месяц - Ноябрь
+                        </li>
+                        <li>
+                            [[year]] - текущий год - 2020
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+{% endblock %}

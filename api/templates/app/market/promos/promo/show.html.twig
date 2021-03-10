@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Промо{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market') }}">Витрина</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('market.promos') }}">Промо</a></li>
+        <li class="breadcrumb-item active">{{ promo.name }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    {{ include('app/market/promos/_tabs.html.twig') }}
+
+    <div class="controls">
+        <a href="{{ path('market.promos.promo.edit', {'id': promo.id}) }}" class="btn btn-primary">Редактировать</a>
+        {% if promo.active %}
+            <form action="{{ path('market.promos.promo.archive', {'id': promo.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('archive') }}" />
+                <button type="submit" class="btn btn-danger">Архивировать</button>
+            </form>
+        {% endif %}
+        {% if promo.archived %}
+            <form action="{{ path('market.promos.promo.reinstate', {'id': promo.id}) }}" method="post">
+                <input type="hidden" name="token" value="{{ csrf_token('reinstate') }}" />
+                <button type="submit" class="btn btn-success">Восстановить</button>
+            </form>
+        {% endif %}
+        <form action="{{ path('market.promos.promo.delete', {'id': promo.id}) }}" method="post" onsubmit="return confirm('Вы уверены?')">
+            <input type="hidden" name="token" value="{{ csrf_token('delete') }}" />
+            <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th>Название</th>
+                <td>{{ promo.name }}</td>
+            </tr>
+            <tr>
+                <th>Тип</th>
+                <td>{{ market_promo_type(promo.type.name) }}</td>
+            </tr>
+            <tr>
+                <th>Реферальная ссылка</th>
+                <td>
+                    {% if promo.referralLink %}
+                        {{ promo.referralLink.link }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Код</th>
+                <td>{{ promo.code }}</td>
+            </tr>
+            <tr>
+                <th>Скидка</th>
+                <td>
+                    {% if promo.discountUnit %}
+                        {{ market_promo_discount(promo.discount, promo.discountUnit.name) }}
+                    {% else %}
+                        {{ promo.discount }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Дата начала</th>
+                <td>{{ promo.startDate | date('d.m.Y H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Дата окончания</th>
+                <td>{{ promo.endDate | date('d.m.Y H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Магазин</th>
+                <td>
+                    <a class="btn btn-outline-primary"
+                       href="{{ path('market.stores.store.show', {'id': promo.store.id}) }}">{{ promo.store.name }}</a>
+                </td>
+            </tr>
+            <tr>
+                <th>Описание</th>
+                <td>{{ promo.description | raw }}</td>
+            </tr>
+            <tr>
+                <th>Статус</th>
+                <td>{{ promo_status(promo.status.name) }}</td>
+            </tr>
+            <tr>
+                <th>Seo H2</th>
+                <td>{{ promo.seo.heading }}</td>
+            </tr>
+            <tr>
+                <th>Автор</th>
+                <td>
+                    <a href="{{ path('market.authors.show', {'id': promo.author.id}) }}">
+                        {{ promo.author.name.full }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>Дата создания</th>
+                <td>{{ promo.date | date('d.m.Y H:i') }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

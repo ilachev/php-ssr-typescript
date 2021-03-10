@@ -1,0 +1,97 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'ru'
+    env(API_VERSION): "1"
+    api.base_url: "%env(BASE_URL)%" # use for static files
+    api.version: "%env(API_VERSION)%"
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Model/User/Entity,/Model/Market/Entity,Model/Blog/Entity,Migrations,Tests,Kernel.php}'
+
+    App\Model\User\Entity\User\UserRepository: ~
+    App\Model\Market\Entity\Author\AuthorRepository: ~
+    App\Model\Market\Entity\Stores\Store\StoreRepository: ~
+    App\Model\Market\Entity\Promos\Promo\PromoRepository: ~
+    App\Model\Market\Entity\Categories\Category\CategoryRepository: ~
+    App\Model\Market\Entity\Stores\Store\Comment\CommentRepository: ~
+    App\Model\Blog\Entity\Author\AuthorRepository: ~
+    App\Model\Blog\Entity\Categories\Category\CategoryRepository: ~
+    App\Model\Blog\Entity\Categories\Setting\SettingRepository: ~
+    App\Model\Blog\Entity\Posts\Post\PostRepository: ~
+    App\Model\Blog\Entity\Posts\Post\Comment\CommentRepository: ~
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    App\Model\User\Service\ResetTokenizer:
+        factory: 'App\Container\Model\User\Service\ResetTokenizerFactory::create'
+        arguments: ['PT1H']
+
+    App\Widget\:
+        resource: '../src/Widget'
+        tags: ['twig.extension']
+
+    App\Menu\SidebarMenu:
+        tags: [{ name: knp_menu.menu_builder, method: build, alias: sidebar }]
+
+    App\Menu\Market\Stores\MainMenu:
+        tags: [{ name: knp_menu.menu_builder, method: build, alias: market_stores_main }]
+
+    App\Menu\Market\Promos\MainMenu:
+        tags: [{ name: knp_menu.menu_builder, method: build, alias: market_promos_main }]
+
+    App\Menu\Market\Categories\MainMenu:
+        tags: [{ name: knp_menu.menu_builder, method: build, alias: market_categories_main }]
+
+    App\Menu\Blog\Categories\MainMenu:
+        tags: [{ name: knp_menu.menu_builder, method: build, alias: blog_categories_main }]
+
+    App\Menu\Blog\Posts\MainMenu:
+        tags: [{ name: knp_menu.menu_builder, method: build, alias: blog_posts_main }]
+
+    App\Service\Uploader\FileUploader:
+        arguments: ['@default.storage', '%env(STORAGE_BASE_URL)%']
+
+    App\Service\FrontendUrlBuilder:
+        arguments: ['%env(FRONTEND_BASE_URL)%']
+
+    App\Service\AdminUrlBuilder:
+        arguments: ['%env(ADMIN_BASE_URL)%']
+
+    App\Model\Market\Entity\Stores\Setting\Id:
+        arguments: ['']
+
+    App\Model\Market\Entity\Categories\Setting\Id:
+        arguments: ['']
+
+    App\Model\Market\Entity\Promos\Setting\Id:
+        arguments: ['']
+
+    App\Model\Blog\Entity\Categories\Setting\Id:
+        arguments: ['']
+
+    App\Model\Blog\Entity\Posts\Setting\Id:
+        arguments: ['']
+
+    App\Model\EventDispatcher:
+        class: App\Event\Dispatcher\MessengerEventDispatcher
+
+    App\Event\Listener\User\UserResolveListener:
+        tags:
+            - { name: kernel.event_listener, event: trikoder.oauth2.user_resolve, method: onUserResolve }
